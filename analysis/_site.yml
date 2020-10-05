@@ -1,7 +1,7 @@
-name: "NB_ash_PG"
+name: NB_ash_PG
 output_dir: ../docs
 navbar:
-  title: "NB_ash_PG"
+  title: NB_ash_PG
   left:
   - text: Home
     href: index.html
@@ -9,6 +9,10 @@ navbar:
     href: about.html
   - text: License
     href: license.html
+  right:
+  - icon: fa-github
+    text: Source code
+    href: https://github.com/YushaLiu/NB_ash_PG
 output:
   workflowr::wflow_html:
     toc: yes
