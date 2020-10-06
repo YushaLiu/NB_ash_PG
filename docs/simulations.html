@@ -413,7 +413,7 @@ div.tocify {
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2020-10-05
+<strong>Last updated:</strong> 2020-10-06
 </p>
 <p>
 <strong>Checks:</strong> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 7 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> 0
@@ -504,16 +504,16 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomYushaLiuNBashPGtree6d63fdbf2797febf73ec092ab9ac55f8e39f95fctargetblank6d63fdba"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/YushaLiu/NB_ash_PG/tree/6d63fdbf2797febf73ec092ab9ac55f8e39f95fc" target="_blank">6d63fdb</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomYushaLiuNBashPGtree0bb772b641f6b3b24577f9799c413358f53e468ftargetblank0bb772ba"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/YushaLiu/NB_ash_PG/tree/0bb772b641f6b3b24577f9799c413358f53e468f" target="_blank">0bb772b</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcomYushaLiuNBashPGtree6d63fdbf2797febf73ec092ab9ac55f8e39f95fctargetblank6d63fdba" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomYushaLiuNBashPGtree0bb772b641f6b3b24577f9799c413358f53e468ftargetblank0bb772ba" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility.
 </p>
 <p>
-The results in this page were generated with repository version <a href="https://github.com/YushaLiu/NB_ash_PG/tree/6d63fdbf2797febf73ec092ab9ac55f8e39f95fc" target="_blank">6d63fdb</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
+The results in this page were generated with repository version <a href="https://github.com/YushaLiu/NB_ash_PG/tree/0bb772b641f6b3b24577f9799c413358f53e468f" target="_blank">0bb772b</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
 </p>
 <p>
 Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -521,6 +521,10 @@ Note that you need to be careful to ensure that all relevant files for the analy
 <pre><code>
 Ignored files:
     Ignored:    .DS_Store
+    Ignored:    .Rhistory
+
+Unstaged changes:
+    Modified:   code/util.R
 
 </code></pre>
 <p>
@@ -564,6 +568,40 @@ Message
 Rmd
 </td>
 <td>
+<a href="https://github.com/YushaLiu/NB_ash_PG/blob/0bb772b641f6b3b24577f9799c413358f53e468f/analysis/simulations.Rmd" target="_blank">0bb772b</a>
+</td>
+<td>
+yushaliu
+</td>
+<td>
+2020-10-06
+</td>
+<td>
+Remove the random effects in NB ash model
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/YushaLiu/NB_ash_PG/97d204b377a37515bb802c013b9317d1e2b43745/docs/simulations.html" target="_blank">97d204b</a>
+</td>
+<td>
+yushaliu
+</td>
+<td>
+2020-10-05
+</td>
+<td>
+Build site.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
 <a href="https://github.com/YushaLiu/NB_ash_PG/blob/6d63fdbf2797febf73ec092ab9ac55f8e39f95fc/analysis/simulations.Rmd" target="_blank">6d63fdb</a>
 </td>
 <td>
@@ -583,8 +621,8 @@ Upload simulation results
 </div>
 </div>
 </div>
-<div id="introduction" class="section level2">
-<h2>Introduction</h2>
+<div id="simulation-setup" class="section level2">
+<h2>Simulation setup</h2>
 <pre class="r"><code>library(ggplot2)
 theme_set(theme_bw())
 library(plyr)
@@ -595,7 +633,7 @@ source(&quot;code/util.R&quot;)
 # grid of sigma2
 sigma2 &lt;- c(1e-6, 1e-5, 1e-4, 4e-4, 1e-3, 4e-3, 1e-2, 2e-2, 4e-2, 8e-2, 0.16, 0.32, 0.64, 1, 2, 4, 8, 16)
 
-# specify the underlying mean for poisson (negative binomial) data
+# specify the sample size and underlying mean for poisson (or negative binomial) data
 n = 1000 
 w = 0.9
 lambdasparse = rep(0,n)
@@ -606,26 +644,63 @@ for (i in 1:n)
   }
   else {lambdasparse[i] &lt;- 10}
 }</code></pre>
-<div id="scenario-1-poisson-data" class="section level3">
-<h3>Scenario 1: poisson data</h3>
+<div id="scenario-1-poisson-data-sparse-lambda" class="section level3">
+<h3>Scenario 1: poisson data (sparse lambda)</h3>
 <pre class="r"><code>set.seed(786)
 y &lt;- rpois(n,lambdasparse) 
 
 start_time = proc.time()
-fit &lt;- nb_ash_pg(y, sigma2, r=1000, init=NULL, maxiter=500, tol=1e-6, verbose=FALSE)
+fit &lt;- nb_ash_pg(y, sigma2, r=1000, init=NULL, maxiter=500, verbose=FALSE)
 runtime = proc.time() - start_time
 runtime</code></pre>
 <pre><code>   user  system elapsed 
-  3.546   1.522   5.079 </code></pre>
+  2.696   0.935   3.639 </code></pre>
 <pre class="r"><code>plot(fit$ELBO, xlab = &quot;niter&quot;, ylab = &quot;elbo&quot;)</code></pre>
 <p><img src="figure/simulations.Rmd/unnamed-chunk-2-1.png" width="672" style="display: block; margin: auto;" /></p>
-<pre class="r"><code>fit$s2</code></pre>
-<pre><code>[1] 3.184323e-05</code></pre>
-<pre class="r"><code>fit$pi</code></pre>
-<pre><code> [1] 0.193727320 0.193719860 0.192916085 0.181328143 0.130413149 0.001126687
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-2-1">
+Past versions of unnamed-chunk-2-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-2-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/YushaLiu/NB_ash_PG/blob/97d204b377a37515bb802c013b9317d1e2b43745/docs/figure/simulations.Rmd/unnamed-chunk-2-1.png" target="_blank">97d204b</a>
+</td>
+<td>
+yushaliu
+</td>
+<td>
+2020-10-05
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<pre class="r"><code># estimated prior weights of ash prior
+fit$pi</code></pre>
+<pre><code> [1] 0.191823020 0.191889822 0.191822533 0.182466627 0.133996539 0.001234609
  [7] 0.000001000 0.000001000 0.000001000 0.000001000 0.000001000 0.000001000
-[13] 0.000001000 0.000001000 0.000001000 0.000001000 0.000001000 0.106762476</code></pre>
-<pre class="r"><code>r &lt;- 1000
+[13] 0.000001000 0.000001000 0.000001000 0.000001000 0.000001000 0.106760572</code></pre>
+<pre class="r"><code># compare the true lambda, observation and posterior mean of lambda, where lambda is the mean for poisson distribution 
+r &lt;- 1000
 lambda.pm &lt;- rowSums(fit$zeta * r * exp(fit$mu + fit$m + fit$v2/2))
 
 post.data = rbind(data.frame(type = &quot;true lambda&quot;, values=lambdasparse, x=seq(1:n)),
@@ -633,8 +708,46 @@ post.data = rbind(data.frame(type = &quot;true lambda&quot;, values=lambdasparse
                   data.frame(type = &quot;posterior mean&quot;, values=lambda.pm, x=seq(1:n)))
 
 ggplot(post.data, aes(x=x, y=values, group=type, colour=type)) + 
-  geom_point(aes(colour = type),size = 1) + ylab(&quot;Possion ash&quot;) + xlab(expression(y))+facet_grid(type~.,scales=&quot;free_y&quot;) + ylim(range(y))</code></pre>
+  geom_point(aes(colour = type),size = 1) + ylab(&quot;NB ash with fixed, large r&quot;) + 
+  xlab(expression(y))+facet_grid(type~.,scales=&quot;free_y&quot;) + ylim(range(y))</code></pre>
 <p><img src="figure/simulations.Rmd/unnamed-chunk-2-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-2-2">
+Past versions of unnamed-chunk-2-2.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-2-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/YushaLiu/NB_ash_PG/blob/97d204b377a37515bb802c013b9317d1e2b43745/docs/figure/simulations.Rmd/unnamed-chunk-2-2.png" target="_blank">97d204b</a>
+</td>
+<td>
+yushaliu
+</td>
+<td>
+2020-10-05
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 <div id="scenario-2-negative-binomial-data-constant-lambda-r10" class="section level3">
 <h3>Scenario 2: negative binomial data (constant lambda, r=10)</h3>
@@ -643,21 +756,58 @@ n = 1000
 y = rnbinom(n, size = 10, mu=10)
 
 start_time = proc.time()
-fit &lt;- nb_ash_pg(y, sigma2, r=1000, init=NULL, maxiter=500, tol=1e-6, verbose=FALSE)
+fit &lt;- nb_ash_pg(y, sigma2, r=1000, init=NULL, maxiter=500, verbose=FALSE)
 runtime = proc.time() - start_time
 runtime</code></pre>
 <pre><code>   user  system elapsed 
-  3.542   1.485   5.047 </code></pre>
+  2.827   1.009   3.893 </code></pre>
 <pre class="r"><code>plot(fit$ELBO, xlab = &quot;niter&quot;, ylab = &quot;elbo&quot;)</code></pre>
 <p><img src="figure/simulations.Rmd/unnamed-chunk-3-1.png" width="672" style="display: block; margin: auto;" /></p>
-<pre class="r"><code>fit$s2</code></pre>
-<pre><code>[1] 2.231072e-05</code></pre>
-<pre class="r"><code>fit$pi</code></pre>
-<pre><code> [1] 0.0352694559 0.0365266789 0.0512168815 0.1357219655 0.5154032255
- [6] 0.1973319020 0.0000010000 0.0000010000 0.0000010000 0.0000010000
-[11] 0.0000010000 0.0000010000 0.0278914702 0.0006295033 0.0000010000
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-3-1">
+Past versions of unnamed-chunk-3-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-3-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/YushaLiu/NB_ash_PG/blob/97d204b377a37515bb802c013b9317d1e2b43745/docs/figure/simulations.Rmd/unnamed-chunk-3-1.png" target="_blank">97d204b</a>
+</td>
+<td>
+yushaliu
+</td>
+<td>
+2020-10-05
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<pre class="r"><code># estimated prior weights of ash prior
+fit$pi</code></pre>
+<pre><code> [1] 0.0297040148 0.0308136692 0.0439092242 0.1222452703 0.5038033372
+ [6] 0.2412374028 0.0000010000 0.0000010000 0.0000010000 0.0000010000
+[11] 0.0000010000 0.0000010000 0.0276649505 0.0006132111 0.0000010000
 [16] 0.0000010000 0.0000010000 0.0000010000</code></pre>
-<pre class="r"><code>r &lt;- 1000
+<pre class="r"><code># compare the true lambda, observation and posterior mean of lambda, where lambda is the mean for negative binomial distribution 
+r &lt;- 1000
 lambda.pm &lt;- rowSums(fit$zeta * r * exp(fit$mu + fit$m + fit$v2/2))
 
 post.data = rbind(data.frame(type = &quot;true lambda&quot;, values=10, x=seq(1:n)),
@@ -665,8 +815,46 @@ post.data = rbind(data.frame(type = &quot;true lambda&quot;, values=10, x=seq(1:
                   data.frame(type = &quot;posterior mean&quot;, values=lambda.pm, x=seq(1:n)))
 
 ggplot(post.data, aes(x=x, y=values, group=type, colour=type)) + 
-  geom_point(aes(colour = type),size = 1) + ylab(&quot;Possion ash&quot;) + xlab(expression(y))+facet_grid(type~.,scales=&quot;free_y&quot;) + ylim(range(y))</code></pre>
+  geom_point(aes(colour = type),size = 1) + ylab(&quot;NB ash with fixed, large r&quot;) + 
+  xlab(expression(y))+facet_grid(type~.,scales=&quot;free_y&quot;) + ylim(range(y))</code></pre>
 <p><img src="figure/simulations.Rmd/unnamed-chunk-3-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-3-2">
+Past versions of unnamed-chunk-3-2.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-3-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/YushaLiu/NB_ash_PG/blob/97d204b377a37515bb802c013b9317d1e2b43745/docs/figure/simulations.Rmd/unnamed-chunk-3-2.png" target="_blank">97d204b</a>
+</td>
+<td>
+yushaliu
+</td>
+<td>
+2020-10-05
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 <div id="scenario-3-negative-binomial-data-sparse-lambda-r10" class="section level3">
 <h3>Scenario 3: negative binomial data (sparse lambda, r=10)</h3>
@@ -674,20 +862,57 @@ ggplot(post.data, aes(x=x, y=values, group=type, colour=type)) +
 y = rnbinom(n, size=10, mu=lambdasparse)
 
 start_time = proc.time()
-fit &lt;- nb_ash_pg(y, sigma2, r=1000, init=NULL, maxiter=500, tol=1e-6, verbose=FALSE)
+fit &lt;- nb_ash_pg(y, sigma2, r=1000, init=NULL, maxiter=500, verbose=FALSE)
 runtime = proc.time() - start_time
 runtime</code></pre>
 <pre><code>   user  system elapsed 
-  3.629   1.515   5.189 </code></pre>
+  2.692   0.943   3.653 </code></pre>
 <pre class="r"><code>plot(fit$ELBO, xlab = &quot;niter&quot;, ylab = &quot;elbo&quot;)</code></pre>
 <p><img src="figure/simulations.Rmd/unnamed-chunk-4-1.png" width="672" style="display: block; margin: auto;" /></p>
-<pre class="r"><code>fit$s2</code></pre>
-<pre><code>[1] 3.209509e-05</code></pre>
-<pre class="r"><code>fit$pi</code></pre>
-<pre><code> [1] 0.193820184 0.193811313 0.193003682 0.181523966 0.131087037 0.001199168
- [7] 0.000001000 0.000001000 0.000001000 0.000001000 0.000001000 0.000001000
-[13] 0.000001000 0.000001000 0.000001000 0.000001000 0.000001000 0.105548369</code></pre>
-<pre class="r"><code>r &lt;- 1000
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-4-1">
+Past versions of unnamed-chunk-4-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-4-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/YushaLiu/NB_ash_PG/blob/97d204b377a37515bb802c013b9317d1e2b43745/docs/figure/simulations.Rmd/unnamed-chunk-4-1.png" target="_blank">97d204b</a>
+</td>
+<td>
+yushaliu
+</td>
+<td>
+2020-10-05
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<pre class="r"><code># estimated prior weights of ash prior
+fit$pi</code></pre>
+<pre><code> [1] 0.19192545 0.19199023 0.19191291 0.18264818 0.13465627 0.00131342
+ [7] 0.00000100 0.00000100 0.00000100 0.00000100 0.00000100 0.00000100
+[13] 0.00000100 0.00000100 0.00000100 0.00000100 0.00000100 0.10554726</code></pre>
+<pre class="r"><code># compare the true lambda, observation and posterior mean of lambda, where lambda is the mean for negative binomial distribution 
+r &lt;- 1000
 lambda.pm &lt;- rowSums(fit$zeta * r * exp(fit$mu + fit$m + fit$v2/2))
 
 post.data = rbind(data.frame(type = &quot;true lambda&quot;, values=lambdasparse, x=seq(1:n)),
@@ -695,8 +920,46 @@ post.data = rbind(data.frame(type = &quot;true lambda&quot;, values=lambdasparse
                   data.frame(type = &quot;posterior mean&quot;, values=lambda.pm, x=seq(1:n)))
 
 ggplot(post.data, aes(x=x, y=values, group=type, colour=type)) + 
-  geom_point(aes(colour = type),size = 1) + ylab(&quot;Possion ash&quot;) + xlab(expression(y))+facet_grid(type~.,scales=&quot;free_y&quot;) + ylim(range(y))</code></pre>
+  geom_point(aes(colour = type),size = 1) + ylab(&quot;NB ash with fixed, large r&quot;) + 
+  xlab(expression(y))+facet_grid(type~.,scales=&quot;free_y&quot;) + ylim(range(y))</code></pre>
 <p><img src="figure/simulations.Rmd/unnamed-chunk-4-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-4-2">
+Past versions of unnamed-chunk-4-2.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-4-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/YushaLiu/NB_ash_PG/blob/97d204b377a37515bb802c013b9317d1e2b43745/docs/figure/simulations.Rmd/unnamed-chunk-4-2.png" target="_blank">97d204b</a>
+</td>
+<td>
+yushaliu
+</td>
+<td>
+2020-10-05
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
