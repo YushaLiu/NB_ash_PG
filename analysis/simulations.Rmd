@@ -7,8 +7,7 @@ editor_options:
   chunk_output_type: console
 ---
 
-## Introduction
-
+## Simulation setup
 ```{r warning=FALSE, message=FALSE}
 library(ggplot2)
 theme_set(theme_bw())
@@ -20,7 +19,7 @@ source("code/util.R")
 # grid of sigma2
 sigma2 <- c(1e-6, 1e-5, 1e-4, 4e-4, 1e-3, 4e-3, 1e-2, 2e-2, 4e-2, 8e-2, 0.16, 0.32, 0.64, 1, 2, 4, 8, 16)
 
-# specify the underlying mean for poisson (negative binomial) data
+# specify the sample size and underlying mean for poisson (or negative binomial) data
 n = 1000 
 w = 0.9
 lambdasparse = rep(0,n)
@@ -35,21 +34,22 @@ for (i in 1:n)
 ```
 
 
-### Scenario 1: poisson data 
+### Scenario 1: poisson data (sparse lambda)
 ```{r warning=F}
 set.seed(786)
 y <- rpois(n,lambdasparse) 
 
 start_time = proc.time()
-fit <- nb_ash_pg(y, sigma2, r=1000, init=NULL, maxiter=500, tol=1e-6, verbose=FALSE)
+fit <- nb_ash_pg(y, sigma2, r=1000, init=NULL, maxiter=500, verbose=FALSE)
 runtime = proc.time() - start_time
 runtime
 
 plot(fit$ELBO, xlab = "niter", ylab = "elbo")
 
-fit$s2
+# estimated prior weights of ash prior
 fit$pi
 
+# compare the true lambda, observation and posterior mean of lambda, where lambda is the mean for poisson distribution 
 r <- 1000
 lambda.pm <- rowSums(fit$zeta * r * exp(fit$mu + fit$m + fit$v2/2))
 
@@ -58,7 +58,8 @@ post.data = rbind(data.frame(type = "true lambda", values=lambdasparse, x=seq(1:
                   data.frame(type = "posterior mean", values=lambda.pm, x=seq(1:n)))
 
 ggplot(post.data, aes(x=x, y=values, group=type, colour=type)) + 
-  geom_point(aes(colour = type),size = 1) + ylab("Possion ash") + xlab(expression(y))+facet_grid(type~.,scales="free_y") + ylim(range(y))
+  geom_point(aes(colour = type),size = 1) + ylab("NB ash with fixed, large r") + 
+  xlab(expression(y))+facet_grid(type~.,scales="free_y") + ylim(range(y))
 
 ```
 
@@ -70,15 +71,16 @@ n = 1000
 y = rnbinom(n, size = 10, mu=10)
 
 start_time = proc.time()
-fit <- nb_ash_pg(y, sigma2, r=1000, init=NULL, maxiter=500, tol=1e-6, verbose=FALSE)
+fit <- nb_ash_pg(y, sigma2, r=1000, init=NULL, maxiter=500, verbose=FALSE)
 runtime = proc.time() - start_time
 runtime
 
 plot(fit$ELBO, xlab = "niter", ylab = "elbo")
 
-fit$s2
+# estimated prior weights of ash prior
 fit$pi
 
+# compare the true lambda, observation and posterior mean of lambda, where lambda is the mean for negative binomial distribution 
 r <- 1000
 lambda.pm <- rowSums(fit$zeta * r * exp(fit$mu + fit$m + fit$v2/2))
 
@@ -87,7 +89,8 @@ post.data = rbind(data.frame(type = "true lambda", values=10, x=seq(1:n)),
                   data.frame(type = "posterior mean", values=lambda.pm, x=seq(1:n)))
 
 ggplot(post.data, aes(x=x, y=values, group=type, colour=type)) + 
-  geom_point(aes(colour = type),size = 1) + ylab("Possion ash") + xlab(expression(y))+facet_grid(type~.,scales="free_y") + ylim(range(y))
+  geom_point(aes(colour = type),size = 1) + ylab("NB ash with fixed, large r") + 
+  xlab(expression(y))+facet_grid(type~.,scales="free_y") + ylim(range(y))
 
 ```
 
@@ -98,15 +101,16 @@ set.seed(500)
 y = rnbinom(n, size=10, mu=lambdasparse)
 
 start_time = proc.time()
-fit <- nb_ash_pg(y, sigma2, r=1000, init=NULL, maxiter=500, tol=1e-6, verbose=FALSE)
+fit <- nb_ash_pg(y, sigma2, r=1000, init=NULL, maxiter=500, verbose=FALSE)
 runtime = proc.time() - start_time
 runtime
 
 plot(fit$ELBO, xlab = "niter", ylab = "elbo")
 
-fit$s2
+# estimated prior weights of ash prior
 fit$pi
 
+# compare the true lambda, observation and posterior mean of lambda, where lambda is the mean for negative binomial distribution 
 r <- 1000
 lambda.pm <- rowSums(fit$zeta * r * exp(fit$mu + fit$m + fit$v2/2))
 
@@ -115,6 +119,7 @@ post.data = rbind(data.frame(type = "true lambda", values=lambdasparse, x=seq(1:
                   data.frame(type = "posterior mean", values=lambda.pm, x=seq(1:n)))
 
 ggplot(post.data, aes(x=x, y=values, group=type, colour=type)) + 
-  geom_point(aes(colour = type),size = 1) + ylab("Possion ash") + xlab(expression(y))+facet_grid(type~.,scales="free_y") + ylim(range(y))
+  geom_point(aes(colour = type),size = 1) + ylab("NB ash with fixed, large r") + 
+  xlab(expression(y))+facet_grid(type~.,scales="free_y") + ylim(range(y))
 
 ```
